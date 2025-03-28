@@ -30,9 +30,14 @@ body {
 }
 
 
+.box{
+    text-align: center;
+    
+    
+}
+
 nav {
    background-color: #CB104A;
-   text-align: center;
    padding: 20px 0px 20px 0px;
 }
 
@@ -40,8 +45,8 @@ nav a {
     color: white;
     text-decoration: none;
     font-size: 1.2em;
-    margin: 0 10px 0px 10px;   
-    padding: 20px 20px 20px 20px;
+    margin: 2px 13px 0px 13px;   
+    
     
 }
 
@@ -51,6 +56,7 @@ nav a:hover {
     border-radius: 10px;
     transition-duration: 0.5s;
     padding: 5px 5px 5px 5px;
+    
 
 }
 
