@@ -103,8 +103,6 @@ section#texto h1{
 section#texto p{
     font-size: 1.4em;
     margin-bottom: 20px;
-    margin-right: 80px;
-    margin-left: 80px;
     text-align: justify;
 }
 
@@ -135,8 +133,6 @@ aside p{
     font-size: 1.4em;
     margin-bottom: 0px;
     margin-top: 20px;
-    margin-right: 80px;
-    margin-left: 80px;
     text-align: justify;
     padding-bottom: 20px;
  
