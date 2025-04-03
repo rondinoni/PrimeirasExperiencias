@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Organizer</title>
+    <style>
+        :root {
+            --primary-color: #3a86ff;
+            --secondary-color: #8338ec;
+            --background-color: #f8f9fa;
+            --card-color: #ffffff;
+            --text-color: #212529;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .form-container {
+            background-color: var(--card-color);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        input, select, button {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+        }
+        
+        input {
+            flex: 1;
+        }
+        
+        select {
+            width: 150px;
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2d6ecb;
+        }
+        
+        .groups-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .group-card {
+            background-color: var(--card-color);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--background-color);
+            padding-bottom: 10px;
+        }
+        
+        .group-title {
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+        
+        .link-item {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .link-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .link-name {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+        
+        .link-url {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .link-url:hover {
+            text-decoration: underline;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+        
+        .btn-remove {
+            background-color: #e76f51;
+        }
+        
+        .btn-remove:hover {
+            background-color: #c65c44;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+        
+        .group-form {
+            margin-top: 10px;
+        }
+        
+        @media (max-width: 600px) {
+            .form-row {
+                flex-direction: column;
+            }
+            
+            select, button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Link Organizer</h1>
+            <p>Mantenha seus links favoritos organizados por grupos</p>
+        </header>
+        
+        <div class="form-container">
+            <div class="form-row">
+                <input type="text" id="group-input" placeholder="Nome do novo grupo">
+                <button id="add-group">Adicionar Grupo</button>
+            </div>
+            
+            <div class="form-row">
+                <input type="text" id="link-name" placeholder="Nome do link">
+                <input type="url" id="link-url" placeholder="URL (com https://)">
+                <select id="link-group">
+                    <option value="">Selecione um grupo</option>
+                </select>
+                <button id="add-link">Adicionar Link</button>
+            </div>
+        </div>
+        
+        <div id="groups-container" class="groups-container">
+            <div class="empty-state">
+                <p>Adicione um grupo para começar a organizar seus links.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Modelo de dados
+        let linkData = {
+            groups: []
+        };
+        
+        // Elementos DOM
+        const groupInput = document.getElementById('group-input');
+        const linkNameInput = document.getElementById('link-name');
+        const linkUrlInput = document.getElementById('link-url');
+        const linkGroupSelect = document.getElementById('link-group');
+        const addGroupBtn = document.getElementById('add-group');
+        const addLinkBtn = document.getElementById('add-link');
+        const groupsContainer = document.getElementById('groups-container');
+        
+        // Carregar dados do localStorage
+        function loadData() {
+            const savedData = localStorage.getItem('linkOrganizerData');
+            if (savedData) {
+                linkData = JSON.parse(savedData);
+                updateGroupsSelect();
+                renderGroups();
+            }
+        }
+        
+        // Salvar dados no localStorage
+        function saveData() {
+            localStorage.setItem('linkOrganizerData', JSON.stringify(linkData));
+        }
+        
+        // Atualizar o select de grupos
+        function updateGroupsSelect() {
+            linkGroupSelect.innerHTML = '<option value="">Selecione um grupo</option>';
+            
+            linkData.groups.forEach(group => {
+                const option = document.createElement('option');
+                option.value = group.id;
+                option.textContent = group.name;
+                linkGroupSelect.appendChild(option);
+            });
+        }
+        
+        // Renderizar todos os grupos e seus links
+        function renderGroups() {
+            if (linkData.groups.length === 0) {
+                groupsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <p>Adicione um grupo para começar a organizar seus links.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            groupsContainer.innerHTML = '';
+            
+            linkData.groups.forEach(group => {
+                const groupCard = document.createElement('div');
+                groupCard.className = 'group-card';
+                
+                const groupHeader = document.createElement('div');
+                groupHeader.className = 'group-header';
+                
+                const groupTitle = document.createElement('div');
+                groupTitle.className = 'group-title';
+                groupTitle.textContent = group.name;
+                
+                const groupActions = document.createElement('div');
+                groupActions.className = 'actions';
+                
+                const removeGroupBtn = document.createElement('button');
+                removeGroupBtn.className = 'btn-small btn-remove';
+                removeGroupBtn.textContent = 'Remover';
+                removeGroupBtn.onclick = () => removeGroup(group.id);
+                
+                groupActions.appendChild(removeGroupBtn);
+                groupHeader.appendChild(groupTitle);
+                groupHeader.appendChild(groupActions);
+                groupCard.appendChild(groupHeader);
+                
+                const linksContainer = document.createElement('div');
+                linksContainer.className = 'links-container';
+                
+                if (group.links.length === 0) {
+                    linksContainer.innerHTML = '<p>Nenhum link adicionado.</p>';
+                } else {
+                    group.links.forEach(link => {
+                        const linkItem = document.createElement('div');
+                        linkItem.className = 'link-item';
+                        
+                        const linkNameElement = document.createElement('div');
+                        linkNameElement.className = 'link-name';
+                        linkNameElement.textContent = link.name;
+                        
+                        const linkUrlElement = document.createElement('a');
+                        linkUrlElement.className = 'link-url';
+                        linkUrlElement.href = link.url;
+                        linkUrlElement.textContent = link.url;
+                        linkUrlElement.target = '_blank';
+                        
+                        const linkActions = document.createElement('div');
+                        linkActions.className = 'actions';
+                        
+                        const removeLinkBtn = document.createElement('button');
+                        removeLinkBtn.className = 'btn-small btn-remove';
+                        removeLinkBtn.textContent = 'Remover';
+                        removeLinkBtn.onclick = () => removeLink(group.id, link.id);
+                        
+                        linkActions.appendChild(removeLinkBtn);
+                        linkItem.appendChild(linkNameElement);
+                        linkItem.appendChild(linkUrlElement);
+                        linkItem.appendChild(linkActions);
+                        linksContainer.appendChild(linkItem);
+                    });
+                }
+                
+                groupCard.appendChild(linksContainer);
+                groupsContainer.appendChild(groupCard);
+            });
+        }
+        
+        // Adicionar novo grupo
+        function addGroup() {
+            const groupName = groupInput.value.trim();
+            
+            if (!groupName) {
+                alert('Por favor, insira um nome para o grupo.');
+                return;
+            }
+            
+            // Verificar se o grupo já existe
+            if (linkData.groups.some(group => group.name.toLowerCase() === groupName.toLowerCase())) {
+                alert('Este grupo já existe.');
+                return;
+            }
+            
+            // Adicionar novo grupo
+            const newGroup = {
+                id: Date.now().toString(),
+                name: groupName,
+                links: []
+            };
+            
+            linkData.groups.push(newGroup);
+            saveData();
+            updateGroupsSelect();
+            renderGroups();
+            
+            // Limpar campo
+            groupInput.value = '';
+        }
+        
+        // Adicionar novo link
+        function addLink() {
+            const linkName = linkNameInput.value.trim();
+            const linkUrl = linkUrlInput.value.trim();
+            const groupId = linkGroupSelect.value;
+            
+            if (!linkName || !linkUrl) {
+                alert('Por favor, preencha o nome e a URL do link.');
+                return;
+            }
+            
+            if (!groupId) {
+                alert('Por favor, selecione um grupo.');
+                return;
+            }
+            
+            // Verificar URL
+            try {
+                new URL(linkUrl);
+            } catch (e) {
+                alert('Por favor, insira uma URL válida (com https://).');
+                return;
+            }
+            
+            // Encontrar o grupo
+            const groupIndex = linkData.groups.findIndex(g => g.id === groupId);
+            
+            if (groupIndex === -1) {
+                alert('O grupo selecionado não existe.');
+                return;
+            }
+            
+            // Adicionar link ao grupo
+            const newLink = {
+                id: Date.now().toString(),
+                name: linkName,
+                url: linkUrl
+            };
+            
+            linkData.groups[groupIndex].links.push(newLink);
+            saveData();
+            renderGroups();
+            
+            // Limpar campos
+            linkNameInput.value = '';
+            linkUrlInput.value = '';
+        }
+        
+        // Remover grupo
+        function removeGroup(groupId) {
+            if (!confirm('Tem certeza que deseja remover este grupo e todos os seus links?')) {
+                return;
+            }
+            
+            linkData.groups = linkData.groups.filter(group => group.id !== groupId);
+            saveData();
+            updateGroupsSelect();
+            renderGroups();
+        }
+        
+        // Remover link
+        function removeLink(groupId, linkId) {
+            if (!confirm('Tem certeza que deseja remover este link?')) {
+                return;
+            }
+            
+            const groupIndex = linkData.groups.findIndex(g => g.id === groupId);
+            
+            if (groupIndex !== -1) {
+                linkData.groups[groupIndex].links = linkData.groups[groupIndex].links.filter(link => link.id !== linkId);
+                saveData();
+                renderGroups();
+            }
+        }
+        
+        // Eventos
+        addGroupBtn.addEventListener('click', addGroup);
+        addLinkBtn.addEventListener('click', addLink);
+        
+        // Inicializar
+        loadData();
+    </script>
+</body>
+</html>
