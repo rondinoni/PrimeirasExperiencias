@@ -1,0 +1,73 @@
+@charset "utf-8";
+/* CSS Document */
+/* Reset some default styles */ 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    background-color: #f0f0f0;
+}
+
+#form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    height: 400px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+}
+
+h1{
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.ns{
+    display: flex;
+    height: 100%;
+    background-color: #f0f0f0;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+     
+    
+   
+   
+}
+
+.note p{
+    font-size: 1.2em;
+    color: #333;
+    margin: 20px;
+    text-align: center;
+}
+
+#titulo{
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.note{
+    width: 300px;
+    height: 300px;
+    background-color: #fffb00;
+    border-radius: 10px;
+    margin-left: 20px;
+    margin-top: 10px ;
+    margin-bottom: 10px;}
