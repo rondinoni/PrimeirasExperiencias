@@ -75,7 +75,7 @@ position: absolute;
 }
 
 .subtela {
-    background-image: url(/imagens/gameBG.jpg);
+    background-image: url(gameBG.jpg);
     border-radius: 20px;
     width: 800px;
     display: flex;
