@@ -1,0 +1,49 @@
+.menu ul{
+    list-style-type: none;
+    text-align: center;
+}
+
+.menu ul li{
+    display: inline-block;
+    margin: 20px;
+    background-color: blueviolet;
+    font-size: 20px;
+    border-radius: 20px;
+    font-family: var(--fonte-jogo);
+    padding: 10px;
+    color: azure;
+    transition: 0.5s;
+
+}
+
+.menu ul li:hover{
+    font-size: 25px;
+    transition: 0.5s ease;
+    cursor: pointer;
+    
+}
+
+.contratarContainer{
+    width: 800px;
+    height: 600px;
+    background-color: blueviolet;
+    margin:0 auto ;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    display: none;
+    flex-wrap: wrap;
+}
+
+#compraLadrao{
+    display: block;
+    transition: 0.5s ease;
+
+}
+
+.compraLadrao2{
+    transform: scale(1.1);
+    transition: 0.5s ease;
+}
+
+
+
